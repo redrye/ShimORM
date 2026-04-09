@@ -1,5 +1,6 @@
-import Macroable from "@/Macroable"
+import Macroable from "@/Macroable/Macroable"
 import Connection from "@/Database/Connection"
+import {derive} from "@traits-ts/core";
 
 type TableDefinition = {
     name: string
@@ -12,7 +13,7 @@ type TableDefinition = {
     }>
 }
 
-class SchemaBuilder extends Macroable {
+class SchemaBuilder extends derive(Macroable) {
     protected connection: Connection
 
     constructor(connection: Connection) {

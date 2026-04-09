@@ -1,6 +1,8 @@
+import {trait} from "@traits-ts/core";
+
 type Macro = (...args: any[]) => any
 
-class Macroable {
+const Macroable = trait((base) => class extends base {
     protected static macros: Record<string, Macro> = {}
 
     public static macro(key: string, value: Macro) {
@@ -24,6 +26,6 @@ class Macroable {
             this.macro(key, value)
         }
     }
-}
+})
 
 export default Macroable

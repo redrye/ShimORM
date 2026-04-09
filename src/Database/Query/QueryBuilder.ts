@@ -1,4 +1,6 @@
 import Connection from "@/Database/Connection"
+import {derive} from "@traits-ts/core";
+import Macroable from "@/Macroable/Macroable";
 
 type ComparisonOperator = "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" | "in" | "null"
 type LogicalOperator = "and" | "or"
@@ -37,7 +39,7 @@ type QueryPayload = {
     }>
 }
 
-class QueryBuilder {
+class QueryBuilder extends derive(Macroable) {
     protected connection: Connection
     protected tableName = ""
     protected wheres: WhereClause[] = []
@@ -47,6 +49,7 @@ class QueryBuilder {
     protected pendingData: Record<string, any> = {}
 
     constructor(connection: Connection) {
+        super();
         this.connection = connection
     }
 
