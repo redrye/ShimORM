@@ -1,4 +1,5 @@
 import Connection from "@/Database/Connection"
+import Str from "@/Support/Facades/Str";
 
 type ModelAttributes = Record<string, any>
 type RelationshipType = "hasOne" | "hasMany" | "belongsTo" | "belongsToMany"
@@ -18,6 +19,8 @@ class Model {
     protected static tableName: string | null = null
 
     protected attributes: ModelAttributes = {}
+    protected hidden: string[] = []
+    protected appends: string[] = []
     protected relationships: Map<string, RelationshipConfig> = new Map()
     protected loadedRelations: Map<string, any> = new Map()
 
@@ -26,7 +29,7 @@ class Model {
     }
 
     private static normalizeName(target: typeof Model): string {
-        return target.name.toLowerCase()
+        return Str.snake(target.name)
     }
 
     private static defaultForeignKey(target: typeof Model): string {
@@ -49,12 +52,12 @@ class Model {
         this.tableName = table
     }
 
-    public static table(): string {
-        return this.tableName ?? `${this.name.toLowerCase()}s`
+    public static getTable(): string {
+        return this.tableName ?? `${Str.snake(Str.pluralStudly(this.name))}`
     }
 
     public static query() {
-        return this.getConnection().table(this.table())
+        return this.getConnection().table(this.getTable())
     }
 
     public static async all(): Promise<any[]> {
@@ -165,7 +168,7 @@ class Model {
         this.relationships.set(relationName, {
             type: "belongsToMany",
             model,
-            pivotTable: pivotTable ?? [ctor.table(), model.table()].sort().join("_"),
+            pivotTable: pivotTable ?? [ctor.getTable(), model.getTable()].sort().join("_"),
             foreignPivotKey: foreignPivotKey ?? `${Model.normalizeName(ctor)}_id`,
             relatedPivotKey: relatedPivotKey ?? `${Model.normalizeName(model)}_id`,
             localKey,
