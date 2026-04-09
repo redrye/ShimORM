@@ -10,8 +10,12 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.2",
+    "bootstrap": "^5.3.8",
     "jquery": "^4.0.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "@traits-ts/core": "^1.2.1"
   }
 }
