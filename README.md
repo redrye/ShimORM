@@ -1,210 +1,84 @@
-
 # ShimORM
 
-ShimORM is a TypeScript project built with Vite for building ORM-style data access and related utilities. It is structured around a modular source layout with support for database connections, configuration, events, macros, and shared helpers.
+ShimORM is a lightweight, TypeScript-based Object-Relational Mapping (ORM) library designed for browser-based
+applications. It provides an elegant ActiveRecord-style interface for working with IndexedDB, bringing Laravel-inspired
+model patterns and lifecycle events to client-side data persistence.
 
-## Features
+## What is ShimORM?
 
-- TypeScript 5.9
-- Vite-powered development and build workflow
-- ES module package
-- Alias-based imports using `@`
-- Modular source structure
-- IndexedDB-oriented connection layer
-- Model lifecycle event support
-- Utility helpers for strings and shared behavior
+ShimORM abstracts the complexity of IndexedDB operations behind an intuitive model-based API. Instead of writing verbose
+IndexedDB transactions, you define models that automatically handle CRUD operations, relationships, and data validation.
 
-## Project Structure
+## What is it used for?
 
-## Prerequisites
+- **Progressive Web Apps (PWAs)**: Store and manage offline data with a familiar ORM pattern
+- **Client-side data management**: Build complex browser applications with structured local storage
+- **Offline-first applications**: Persist user data locally with automatic synchronization capabilities
+- **Browser-based tools**: Create rich client-side applications without backend dependencies
 
-- Node.js
-- npm
+## How to Use It
 
-## Installation
+### Installation
 
-## Prerequisites
+Install ShimORM using npm:
 
-- Node.js
-- npm
+```bash
+npm install shimorm
+```
 
-## Installation
+### Basic Usage
 
-## Development
+#### Defining Models
 
-Start the development server:
+Create a model by extending the `Model` class:
 
-## Build
+```typescript
+import {Model} from 'shimorm';
 
-Compile the project and create a production build:
+class User extends Model {
+    constructor() {
+        super();
+    }
+}
 
-## Preview
+export default User;
+```
 
-Preview the production build locally:
+#### CRUD Operations
 
-## Preview
+**Create a new record:**
 
-Preview the production build locally:
+```typescript
+const user = new User();
+user.name = 'John Doe';
+user.email = 'john@example.com';
+await user.save();
+```
 
-## Import Alias
+**Find records:**
 
-The project uses `@` as an alias for the `src` directory.
+```typescript
+// Find by ID
+const user = await User.find(1);
 
-Example:
+// Find all records
+const users = await User.all();
 
-## Public API
+// Find with conditions
+const activeUsers = await User.where('active', true).get();
+```
 
-The package entry point exports library modules such as:
+**Update a record:**
 
-- `Connection`
-- `User`
+```typescript
+const user = await User.find(1);
+user.name = 'Jane Doe';
+await user.save();
+```
 
-## Database Layer
+**Delete a record:**
 
-The database layer is built around table definitions and connection-related logic. A table definition may include:
-
-- table name
-- key path
-- auto-increment behavior
-- indexes
-
-This suggests the project is intended to work with structured storage and ORM-like abstractions.
-
-## Model Events
-
-The project defines lifecycle-style model events including:
-
-- booting
-- booted
-- creating
-- created
-- updating
-- updated
-- deleting
-- deleted
-- forceDeleting
-- forceDeleted
-- restoring
-- restored
-- fetching
-- fetched
-
-## Utility Helpers
-
-The project includes string helper functionality such as:
-
-- `afterLast(subject, search)`
-
-This helper returns the portion of a string after the last occurrence of the given search value.
-
-## TypeScript Configuration
-
-The project is configured for:
-
-- ES2023 target
-- DOM support
-- strictness relaxed for development flexibility
-- bundler-style module resolution
-- no emitted output from TypeScript, since Vite handles bundling
-
-## Dependencies
-
-### Runtime
-
-- `@traits-ts/core`
-
-### Development
-
-- `typescript`
-- `vite`
-- `bootstrap`
-- `jquery`
-- `@types/node`
-
-## Notes
-
-- This repository is currently a foundation for a larger ORM or data-access library.
-- Expand this README as models, database adapters, and APIs become more complete.
-
-## License
-
-Add your chosen license here.
-
-
-## Public API
-
-The package entry point exports library modules such as:
-
-- `Connection`
-- `User`
-
-## Database Layer
-
-The database layer is built around table definitions and connection-related logic. A table definition may include:
-
-- table name
-- key path
-- auto-increment behavior
-- indexes
-
-This suggests the project is intended to work with structured storage and ORM-like abstractions.
-
-## Model Events
-
-The project defines lifecycle-style model events including:
-
-- booting
-- booted
-- creating
-- created
-- updating
-- updated
-- deleting
-- deleted
-- forceDeleting
-- forceDeleted
-- restoring
-- restored
-- fetching
-- fetched
-
-## Utility Helpers
-
-The project includes string helper functionality such as:
-
-- `afterLast(subject, search)`
-
-This helper returns the portion of a string after the last occurrence of the given search value.
-
-## TypeScript Configuration
-
-The project is configured for:
-
-- ES2023 target
-- DOM support
-- strictness relaxed for development flexibility
-- bundler-style module resolution
-- no emitted output from TypeScript, since Vite handles bundling
-
-## Dependencies
-
-### Runtime
-
-- `@traits-ts/core`
-
-### Development
-
-- `typescript`
-- `vite`
-- `bootstrap`
-- `jquery`
-- `@types/node`
-
-## Notes
-
-- This repository is currently a foundation for a larger ORM or data-access library.
-- Expand this README as models, database adapters, and APIs become more complete.
-
-## License
-
-Add your chosen license here.
+```typescript
+const user = await User.find(1);
+await user.delete();
+```
