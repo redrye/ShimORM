@@ -1,5 +1,7 @@
 import Connection from "@/Database/Connection"
 import Str from "@/Support/Facades/Str";
+import BaseModel from "@/Database/Shim/BaseModel";
+import {MODEL_EVENTS} from "@/Events/Contracts";
 
 type ModelAttributes = Record<string, any>
 type RelationshipType = "hasOne" | "hasMany" | "belongsTo" | "belongsToMany"
@@ -14,55 +16,15 @@ interface RelationshipConfig {
     relatedPivotKey?: string
 }
 
-class Model {
-    protected static connection: Connection | null = null
-    protected static tableName: string | null = null
-
-    protected attributes: ModelAttributes = {}
+class Model extends BaseModel {
     protected hidden: string[] = []
     protected appends: string[] = []
-    protected relationships: Map<string, RelationshipConfig> = new Map()
-    protected loadedRelations: Map<string, any> = new Map()
 
     constructor(attributes: ModelAttributes = {}) {
-        this.fill(attributes)
+        super(attributes);
     }
 
-    private static normalizeName(target: typeof Model): string {
-        return Str.snake(target.name)
-    }
 
-    private static defaultForeignKey(target: typeof Model): string {
-        return `${this.normalizeName(target)}_id`
-    }
-
-    public static setConnection(connection: Connection): void {
-        this.connection = connection
-    }
-
-    public static getConnection(): Connection {
-        if (!this.connection) {
-            throw new Error(`No database connection has been set for ${this.name}.`)
-        }
-
-        return this.connection
-    }
-
-    public static setTable(table: string): void {
-        this.tableName = table
-    }
-
-    public static getTable(): string {
-        return this.tableName ?? `${Str.snake(Str.pluralStudly(this.name))}`
-    }
-
-    public static query() {
-        return this.getConnection().table(this.getTable())
-    }
-
-    public static async all(): Promise<any[]> {
-        return this.query().get()
-    }
 
     public static async find(id: any): Promise<any | null> {
         return this.query().where("id", id).first()
@@ -204,7 +166,7 @@ class Model {
         const pivotRecords = await ctor
             .getConnection()
             .table(config.pivotTable!)
-            .where(config.foreignPivotKey!, this.attributes.id)
+            .where(config.foreignPivotKey!, this.attributes[this.primaryKey])
             .get()
 
         const relatedIds = pivotRecords.map((record: any) => record[config.relatedPivotKey!])
@@ -248,49 +210,6 @@ class Model {
 
         this.loadedRelations.set(name, result)
         return result
-    }
-
-    public toJSON(): ModelAttributes {
-        const json: ModelAttributes = {...this.attributes}
-
-        this.loadedRelations.forEach((value, key) => {
-            if (Array.isArray(value)) {
-                json[key] = value.map(item => item.toJSON ? item.toJSON() : item)
-            } else if (value && typeof value.toJSON === "function") {
-                json[key] = value.toJSON()
-            } else {
-                json[key] = value
-            }
-        })
-
-        return json
-    }
-
-    public async save(): Promise<this> {
-        const ctor = this.constructor as typeof Model
-
-        if (this.attributes.id === undefined || this.attributes.id === null) {
-            const insertedId = await ctor.query().insert(this.attributes)
-
-            if (insertedId !== undefined && insertedId !== null) {
-                this.attributes.id = insertedId
-            }
-
-            return this
-        }
-
-        await ctor.query().where("id", this.attributes.id).update(this.attributes)
-        return this
-    }
-
-    public async delete(): Promise<any> {
-        const ctor = this.constructor as typeof Model
-
-        if (this.attributes.id === undefined || this.attributes.id === null) {
-            return false
-        }
-
-        return ctor.query().where("id", this.attributes.id).delete()
     }
 }
 
