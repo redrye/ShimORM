@@ -20,11 +20,7 @@ IndexedDB transactions, you define models that automatically handle CRUD operati
 
 ### Installation
 
-Install ShimORM using npm:
-
-```bash
-npm install shimorm
-```
+not avalible for installing via npm yet.
 
 ### Basic Usage
 
