@@ -1,5 +1,4 @@
-
-
+import $ from "jquery"
 import Connection from "@/Database/Connection"
 import Model from "@/Database/Shim/Model"
 

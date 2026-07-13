@@ -1,7 +1,6 @@
-import Macroable from "@/Macroable/Macroable"
-import QueryBuilder from "@/Database/Query/QueryBuilder"
-import SchemaBuilder from "@/Database/Schema/SchemaBuilder"
-import {derive} from "@traits-ts/core";
+import Macroable from "../Macroable"
+import QueryBuilder from "./Query/QueryBuilder"
+import SchemaBuilder from "./Schema/SchemaBuilder"
 
 type ConnectionConfig = {
     database: string
@@ -55,7 +54,7 @@ type TableDefinition = {
     }>
 }
 
-class Connection extends derive(Macroable) {
+class Connection extends Macroable {
     protected database: string
     protected version: number
     protected idb: IDBDatabase | null = null

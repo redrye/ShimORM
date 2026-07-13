@@ -1,5 +1,5 @@
-import Connection from "@/Database/Connection"
-import Str from "@/Support/Facades/Str";
+import Connection from "../Connection"
+import Str from "../../Support/Facades/Str";
 
 type ModelAttributes = Record<string, any>
 type RelationshipType = "hasOne" | "hasMany" | "belongsTo" | "belongsToMany"
